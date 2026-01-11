@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main(){
-    int b = 2;
-    auto c = zvl::check(b).in_range(18,100);
+    std::string a = "test!";
+    auto c = zvl::check(a).in_len(5, 10).contains("!");
     std::cout << c.is_valid() << " " << c.message() << std::endl;
 }
