@@ -8,21 +8,28 @@ namespace zvl{
     class ValidateObject {
         private:
             const T& obj;
-
+            bool valid = true;
+            std::string msg;
+            
         public:
-            bool is_valid = true;
-            std::string message;
             
             ValidateObject(const T& o) : obj(o) {}
 
-            ValidateObject& in_range(int min, int max){
-                static_assert(std::is_arithmetic_v<T>,
-                "in_range() available only for numeric types");
+            template <typename U, typename V, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+            ValidateObject& in_range(U min, V max){
                 if (obj < min || obj > max) {
-                    is_valid = false;
-                    message = "value out of range";
+                    valid = false;
+                    msg = "value out of range";
                 }
                 return *this;
+            }
+
+            bool is_valid() {
+                return valid;
+            }
+
+            std::string message() {
+                return msg;
             }
         
     };
