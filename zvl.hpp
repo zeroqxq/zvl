@@ -15,7 +15,7 @@ namespace zvl{
             
             ValidateObject(const T& o) : obj(o) {}
 
-            template <typename U, typename V, typename = std::enable_if_t<std::is_arithmetic_v<U>>>
+            template <typename U, typename V>
             ValidateObject& in_range(U min, V max){
                 if (obj < min || obj > max) {
                     valid = false;
@@ -42,6 +42,13 @@ namespace zvl{
                 return *this;
             }
 
+            ValidateObject& not_empty() {
+                if (obj.empty()) {
+                    valid = false;
+                    msg = "string is empty";
+                }
+                return *this;
+            }
 
 
             bool is_valid() {
@@ -55,7 +62,7 @@ namespace zvl{
     };
 
     template <typename T>
-        ValidateObject<T> check(T& obj){
+        ValidateObject<T> check(const T& obj){
             return ValidateObject<T>(obj);
         }
 
