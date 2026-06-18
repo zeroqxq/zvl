@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
 #include <type_traits>
+#include <vector>
+#include <typeinfo>
 
-namespace zvl{
+namespace zvl {
 
     template <typename T>
     class ValidateObject {
@@ -10,6 +12,7 @@ namespace zvl{
             const T& obj;
             bool valid = true;
             std::string msg;
+            std::vector<std::string> msgs;
             
         public:
             
@@ -20,6 +23,7 @@ namespace zvl{
                 if (obj < min || obj > max) {
                     valid = false;
                     msg = "value out of range";
+                    msgs.push_back(msg);
                 }
                 return *this;
             }
@@ -29,6 +33,7 @@ namespace zvl{
                 if (obj.length() < min || obj.length() > max) {
                     valid = false;
                     msg = "len out of range";
+                    msgs.push_back(msg);
                 }
                 return *this;
             }
@@ -38,6 +43,19 @@ namespace zvl{
                 if (!(obj.find(sym) != std::string::npos)) {
                     valid = false;
                     msg = "obj not contains sym";
+                    msgs.push_back(msg);
+                }
+                return *this;
+            }
+
+            template <typename Expected>
+            ValidateObject& is_type() {
+                if constexpr (!std::is_same_v<std::decay_t<T>, std::decay_t<Expected>> &&
+                            !std::is_convertible_v<T, Expected>) {
+                    
+                    valid = false;
+                    msg = "type mismatch";
+                    msgs.push_back(msg);
                 }
                 return *this;
             }
@@ -46,6 +64,7 @@ namespace zvl{
                 if (obj.empty()) {
                     valid = false;
                     msg = "string is empty";
+                    msgs.push_back(msg);
                 }
                 return *this;
             }
@@ -57,6 +76,10 @@ namespace zvl{
 
             std::string message() {
                 return msg;
+            }
+
+            std::vector<std::string> messages() {
+                return msgs;
             }
         
     };

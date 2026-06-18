@@ -3,6 +3,6 @@
 
 int main(){
     std::string a = "test!";
-    auto c = zvl::check(a).not_empty().in_len(5,10).contains("!");
-    std::cout << c.is_valid() << " " << c.message() << std::endl;
+    auto c = zvl::check(a).not_empty().in_len(5,10).contains("!").is_type<int>();
+    std::cout << c.is_valid() << " " << c.message() << " " << std::endl;
 }
